@@ -4,20 +4,12 @@ var questionsAndAnswersEl = document.getElementById("questionsAndAnswers");
 var questionCounter = 0;
 var timeEl = document.querySelector(".time");
 var scoreCounter = 0;
+var scoreEl = document.getElementById("score");
 
 questionsAndAnswersEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
 
-
-// i click the start button
-// that starts the countdown timer and the button goes away
-// the first question is displayed
-// the question has a list of possible answers
-// i choose an answer and then a new question is displayed
-
-// access start button from HTML
-var startButton = document.querySelector("button");
-// add event listener to button
 // when we click start button, timer function runs. start button disappears. prompt displays
+var startButton = document.querySelector("button");
 startButton.addEventListener("click", function () {
     timer();
     startButton.style.display = "none";
@@ -26,7 +18,6 @@ startButton.addEventListener("click", function () {
 
 // create timer function
 function timer() {
-
     timerInterval = setInterval(function () {
         secondsLeft--;
         timeEl.textContent = secondsLeft + " seconds remain";
@@ -74,46 +65,69 @@ function prompt() {
 }
 
 function answerClick(event) {
-    var currentAnswer = questionsAndAnswers[questionCounter].correct;
-    if (event.target.textContent === currentAnswer) {
+    //subtract 10 seconds for a wrong answer, do nothing for a right answer
+    var correctAnswer = questionsAndAnswers[questionCounter].correct;
+    if (event.target.textContent === correctAnswer) {
         console.log("correct")
     } else {
         secondsLeft = secondsLeft - 10;
     }
+
+    // prevent time left from going negative
+    if (secondsLeft < 0) {
+        secondsLeft = 0;
+    }
+
+    // if there are no more questions, run endgame function
     if (questionCounter === questionsAndAnswers.length - 1) {
         timeEl.textContent = secondsLeft + " seconds remain";
         endGame();
+
+    // if there are still questions, ask the next one
     } else {
         questionCounter++;
         prompt();
     }
+    score();
 }
 
 questionsAndAnswersEl.addEventListener("click", answerClick);
 
-
-
 function score(event) {
     // if question is correct, add 20 points
-    var currentAnswer = questionsAndAnswers[questionCounter].correct;
-        // create an element to hold the score
-    var score = document.createElement("h2")
-    if (event.target.textContent === currentAnswer) {  
-        score.textContent = scoreCounter + 20;
+    var correctAnswer = questionsAndAnswers[questionCounter].correct; 
+    if (event.target.textContent === correctAnswer) {  
+        scoreEl.textContent = "Score: " + scoreCounter + 20;
+    } else {
+        scoreEl.textContent = "Score: " + scoreCounter;
     }
-    questionsAndAnswersEl.append(score);
+}
+
+// create initials form
+var initialsField = document.createElement("input");
+initialsField.setAttribute("type", "text");
+initialsField.setAttribute("placeholder", "Your initials");
+
+function storeInitials() {
+    var userInitials = initialsField.value.trim();
+    localStorage.setItem("initials", JSON.stringify(userInitials));
+}
+
+// when the game ends, clear the timer and questions. allow user to save initials and score
+function endGame() {
+    // clear timer and questions
+    clearInterval(timerInterval);
+    questionsAndAnswersEl.innerHTML = "";
+    timeEl.style.display = "none";
+
+    // put initials field into score element
+    document.scoreEl.appendChild(initialsField);
+   
 
 }
 
-// when the game ends, clear the timer and questions. allow user to save intials and score
-// function endGame() {
-//     clearInterval(timerInterval);
-//     questionsAndAnswersEl.innerHTML = "";
-//     timeEl.style.display = "none";
-//     var initialsLabel = 
-// }
-
-
+// store initials input
+storeInitials();
 
 
 
