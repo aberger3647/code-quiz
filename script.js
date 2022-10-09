@@ -3,11 +3,37 @@ var timerInterval;
 var questionsAndAnswersEl = document.getElementById("questionsAndAnswers");
 var questionCounter = 0;
 var timeEl = document.querySelector(".time");
+
+questionsAndAnswersEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
+
+
 // i click the start button
 // that starts the countdown timer and the button goes away
 // the first question is displayed
 // the question has a list of possible answers
 // i choose an answer and then a new question is displayed
+
+// access start button from HTML
+var startButton = document.querySelector("button");
+// add event listener to button
+// when we click start button, timer function runs. start button disappears. prompt displays
+startButton.addEventListener("click", function () {
+    timer();
+    startButton.style.display = "none";
+    prompt();
+})
+
+// create timer function
+function timer() {
+
+    timerInterval = setInterval(function () {
+        secondsLeft--;
+        timeEl.textContent = secondsLeft + " seconds remain";
+        if (secondsLeft === 0) {
+            clearInterval(timerInterval);
+        }
+    }, 1000);
+}
 
 var questionsAndAnswers = [
     {
@@ -46,11 +72,6 @@ function prompt() {
     }
 }
 
-function endgame() {
-    clearInterval(timerInterval);
-    questionsAndAnswersEl.innerHTML = "";
-}
-
 function answerClick(event) {
     var currentAnswer = questionsAndAnswers[questionCounter].correct;
     if (event.target.textContent === currentAnswer) {
@@ -60,35 +81,22 @@ function answerClick(event) {
     }
     if (questionCounter === questionsAndAnswers.length - 1) {
         timeEl.textContent = secondsLeft + " seconds remain";
-        endgame();
+        endGame();
     } else {
         questionCounter++;
         prompt();
     }
 }
 
-// access start button from HTML
-var startButton = document.querySelector("button");
-// add event listener to button
-startButton.addEventListener("click", function () {
-    timer();
-    startButton.style.display = "none";
-    prompt();
-})
-
 questionsAndAnswersEl.addEventListener("click", answerClick)
 
-// create timer function
-function timer() {
-
-    timerInterval = setInterval(function () {
-        secondsLeft--;
-        timeEl.textContent = secondsLeft + " seconds remain";
-
-        if (secondsLeft === 0) {
-            clearInterval(timerInterval);
-        }
-
-    }, 1000);
+function endGame() {
+    clearInterval(timerInterval);
+    questionsAndAnswersEl.innerHTML = "";
 }
+
+
+
+
+
 
