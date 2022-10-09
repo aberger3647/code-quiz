@@ -96,12 +96,16 @@ questionsAndAnswersEl.addEventListener("click", answerClick);
 function score(event) {
     // if question is correct, add 20 points
     var correctAnswer = questionsAndAnswers[questionCounter].correct; 
+    // i think the line below is incorrect. i don't think i am supposed to use an event target. i'm not sure how to access the correct answer to make the comparison
     if (event.target.textContent === correctAnswer) {  
         scoreEl.textContent = "Score: " + scoreCounter + 20;
     } else {
         scoreEl.textContent = "Score: " + scoreCounter;
     }
 }
+
+// store score
+localStorage.setItem("score", JSON.stringify(score));
 
 // create initials form
 var initialsField = document.createElement("input");
@@ -122,13 +126,31 @@ function endGame() {
 
     // put initials field into score element
     document.scoreEl.appendChild(initialsField);
-   
 
+    // put score into score element
+    document.scoreEl.appendChild(score)
 }
 
 // store initials input
 storeInitials();
 
+// render initials and score
+function renderInitialsAndScore() {
+    // get stored score
+    var highScore = JSON.parse(localStorage.getItem("score"))
+    // create element to hold score info
+    var renderScore = document.createElement("span");
+    // get stored initials
+    var initialsInput = JSON.parse(localStorage.getItem("userInitials"));
+    // create element to hold initials info
+    var renderInitials = document.createElement("span");
+    // put score info into score element
+    renderScore.innerHTML = highScore;
+    // put initials info into initials element
+    renderInitials.innerHTML = initialsInput;
+    // put score and initials into score element
+    document.scoreEl.appendChild(renderScore);
+    document.scoreEl.appendChild(renderInitials);
+}
 
-
-
+renderInitialsAndScore();
