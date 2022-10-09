@@ -3,6 +3,7 @@ var timerInterval;
 var questionsAndAnswersEl = document.getElementById("questionsAndAnswers");
 var questionCounter = 0;
 var timeEl = document.querySelector(".time");
+var scoreCounter = 0;
 
 questionsAndAnswersEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
 
@@ -88,12 +89,29 @@ function answerClick(event) {
     }
 }
 
-questionsAndAnswersEl.addEventListener("click", answerClick)
+questionsAndAnswersEl.addEventListener("click", answerClick);
 
-function endGame() {
-    clearInterval(timerInterval);
-    questionsAndAnswersEl.innerHTML = "";
+
+
+function score(event) {
+    // if question is correct, add 20 points
+    var currentAnswer = questionsAndAnswers[questionCounter].correct;
+        // create an element to hold the score
+    var score = document.createElement("h2")
+    if (event.target.textContent === currentAnswer) {  
+        score.textContent = scoreCounter + 20;
+    }
+    questionsAndAnswersEl.append(score);
+
 }
+
+// when the game ends, clear the timer and questions. allow user to save intials and score
+// function endGame() {
+//     clearInterval(timerInterval);
+//     questionsAndAnswersEl.innerHTML = "";
+//     timeEl.style.display = "none";
+//     var initialsLabel = 
+// }
 
 
 
