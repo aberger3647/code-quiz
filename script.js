@@ -1,12 +1,13 @@
 var secondsLeft = 60;
 var timerInterval;
-var questionsAndAnswersEl = document.getElementById("questionsAndAnswers");
+var promptEl = document.getElementById("questionsAndAnswers");
 var questionCounter = 0;
 var timeEl = document.querySelector(".time");
 var scoreCounter = 0;
 var scoreEl = document.getElementById("score");
 
-questionsAndAnswersEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
+promptEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
+scoreEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
 
 // when we click start button, timer function runs. start button disappears. prompt displays
 var startButton = document.querySelector("button");
@@ -14,6 +15,8 @@ startButton.addEventListener("click", function () {
     timer();
     startButton.style.display = "none";
     prompt();
+    // why does javascript not like (event)?
+    score(event);
 })
 
 // create timer function
@@ -52,15 +55,15 @@ var questionsAndAnswers = [
 ]
 
 function prompt() {
-    questionsAndAnswersEl.innerHTML = "";
+    promptEl.innerHTML = "";
     var currentQuestion = questionsAndAnswers[questionCounter];
     var questionEl = document.createElement("h3");
     questionEl.textContent = currentQuestion.question;
-    questionsAndAnswersEl.append(questionEl);
+    promptEl.append(questionEl);
     for (var i = 0; i < currentQuestion.answers.length; i++) {
         var answer = document.createElement("button");
         answer.textContent = currentQuestion.answers[i];
-        questionsAndAnswersEl.append(answer);
+        promptEl.append(answer);
     }
 }
 
@@ -88,10 +91,10 @@ function answerClick(event) {
         questionCounter++;
         prompt();
     }
-    score();
+    score(event);
 }
 
-questionsAndAnswersEl.addEventListener("click", answerClick);
+promptEl.addEventListener("click", answerClick);
 
 function score(event) {
     // if question is correct, add 20 points
@@ -121,14 +124,14 @@ function storeInitials() {
 function endGame() {
     // clear timer and questions
     clearInterval(timerInterval);
-    questionsAndAnswersEl.innerHTML = "";
+    promptEl.innerHTML = "";
     timeEl.style.display = "none";
 
     // put initials field into score element
-    document.scoreEl.appendChild(initialsField);
+    scoreEl.appendChild(initialsField);
 
     // put score into score element
-    document.scoreEl.appendChild(score)
+    scoreEl.appendChild(score)
 }
 
 // store initials input
