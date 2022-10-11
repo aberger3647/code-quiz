@@ -14,9 +14,7 @@ scoreEl.setAttribute("style", "font-family:sans-serif; text-align:center; displa
 startButton.addEventListener("click", function () {
     timer();
     startButton.style.display = "none";
-    prompt();
-    // why does javascript not like (event)?
-    score(event);
+    createElements();
 })
 
 // create timer function
@@ -54,26 +52,43 @@ var questionsAndAnswers = [
     }
 ]
 
-function prompt() {
+
+function createElements () {
     promptEl.innerHTML = "";
-    var currentQuestion = questionsAndAnswers[questionCounter];
     var questionEl = document.createElement("h3");
-    questionEl.textContent = currentQuestion.question;
+    questionEl.setAttribute("id", "questionID");
     promptEl.append(questionEl);
-    for (var i = 0; i < currentQuestion.answers.length; i++) {
+    for (var i = 0; i < 4; i++) {
         var answer = document.createElement("button");
-        answer.textContent = currentQuestion.answers[i];
+        answer.setAttribute("class", "answerID");
         promptEl.append(answer);
+    }
+    scoreEl.textContent = "Score: " + scoreCounter;
+    prompt();
+}
+
+function prompt() {
+    var currentQuestion = questionsAndAnswers[questionCounter];
+    var questionEl = document.getElementById("questionID");
+    questionEl.textContent = currentQuestion.question;
+    var answerChoice = document.querySelectorAll(".answerID");
+    for (var i = 0; i < currentQuestion.answers.length; i++) {  
+        answerChoice[i].textContent = currentQuestion.answers[i];
     }
 }
 
 function answerClick(event) {
     //subtract 10 seconds for a wrong answer, do nothing for a right answer
     var correctAnswer = questionsAndAnswers[questionCounter].correct;
-    if (event.target.textContent === correctAnswer) {
-        console.log("correct")
-    } else {
-        secondsLeft = secondsLeft - 10;
+    if (event.target.tagName = "button") {
+        if (event.target.textContent === correctAnswer) {
+            scoreCounter += 20;
+            scoreEl.textContent = "Score: " + scoreCounter;
+            console.log("correct");
+        } else {
+            secondsLeft = secondsLeft - 10;
+            scoreEl.textContent = "Score: " + scoreCounter;
+        }
     }
 
     // prevent time left from going negative
@@ -91,21 +106,9 @@ function answerClick(event) {
         questionCounter++;
         prompt();
     }
-    score(event);
 }
 
 promptEl.addEventListener("click", answerClick);
-
-function score(event) {
-    // if question is correct, add 20 points
-    var correctAnswer = questionsAndAnswers[questionCounter].correct; 
-    // i'm not sure how to access the correct answer to make the comparison
-    if (event.target.textContent === correctAnswer) {  
-        return scoreEl.textContent = "Score: " + scoreCounter + 20;
-    } else {
-        return scoreEl.textContent = "Score: " + scoreCounter;
-    } 
-}
 
 // store score
 localStorage.setItem("score", JSON.stringify(score));
@@ -135,10 +138,8 @@ function endGame() {
 
     // put initials field into score element
     scoreEl.appendChild(initialsField);
-
-    // put score into score element
-    scoreEl.appendChild(renderScore);
 }
+
 
 // store initials input
 storeInitials();
@@ -158,8 +159,8 @@ function renderInitialsAndScore() {
     // put initials info into initials element
     renderInitials.innerHTML = initialsInput;
     // put score and initials into score element
-    document.scoreEl.appendChild(scoreCounter);
-    document.scoreEl.appendChild(renderInitials);
+    scoreEl.appendChild(renderScore);
+    scoreEl.appendChild(renderInitials);
 }
 
 renderInitialsAndScore();
