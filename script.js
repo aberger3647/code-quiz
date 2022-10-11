@@ -111,24 +111,31 @@ function answerClick(event) {
 promptEl.addEventListener("click", answerClick);
 
 // store score
-localStorage.setItem("score", JSON.stringify(score));
 
 // create initials form
 var form = document.createElement("form");
+form.setAttribute("id", "form");
 var initialsField = document.createElement("input");
+console.log(form);
 form.appendChild(initialsField);
 initialsField.setAttribute("type", "text");
 initialsField.setAttribute("placeholder", "Your initials");
 
 // create storeInitials function
-function storeInitials() {
+function storeInitials(event) {
+    event.preventDefault();
+    console.log("function hit");
     var userInitials = initialsField.value.trim();
+    console.log(userInitials);
     localStorage.setItem("initials", JSON.stringify(userInitials));
+    localStorage.setItem("score", JSON.stringify(scoreCounter));
+    initialsField.value = "";
 }
 
 // add event listener to initials submission
-initialsField.addEventListener("submit", storeInitials);
+form.addEventListener("submit", storeInitials);
 
+console.log(initialsField);
 // when the game ends, clear the timer and questions. allow user to save initials and score
 function endGame() {
     // clear timer and questions
@@ -137,12 +144,12 @@ function endGame() {
     timeEl.style.display = "none";
 
     // put initials field into score element
-    scoreEl.appendChild(initialsField);
+    scoreEl.appendChild(form);
 }
 
 
 // store initials input
-storeInitials();
+// storeInitials();
 
 // render initials and score
 function renderInitialsAndScore() {
