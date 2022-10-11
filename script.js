@@ -1,3 +1,4 @@
+var startButton = document.querySelector("button");
 var secondsLeft = 60;
 var timerInterval;
 var promptEl = document.getElementById("questionsAndAnswers");
@@ -10,7 +11,6 @@ promptEl.setAttribute("style", "font-family:sans-serif; text-align:center; displ
 scoreEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
 
 // when we click start button, timer function runs. start button disappears. prompt displays
-var startButton = document.querySelector("button");
 startButton.addEventListener("click", function () {
     timer();
     startButton.style.display = "none";
@@ -99,26 +99,32 @@ promptEl.addEventListener("click", answerClick);
 function score(event) {
     // if question is correct, add 20 points
     var correctAnswer = questionsAndAnswers[questionCounter].correct; 
-    // i think the line below is incorrect. i don't think i am supposed to use an event target. i'm not sure how to access the correct answer to make the comparison
+    // i'm not sure how to access the correct answer to make the comparison
     if (event.target.textContent === correctAnswer) {  
-        scoreEl.textContent = "Score: " + scoreCounter + 20;
+        return scoreEl.textContent = "Score: " + scoreCounter + 20;
     } else {
-        scoreEl.textContent = "Score: " + scoreCounter;
-    }
+        return scoreEl.textContent = "Score: " + scoreCounter;
+    } 
 }
 
 // store score
 localStorage.setItem("score", JSON.stringify(score));
 
 // create initials form
+var form = document.createElement("form");
 var initialsField = document.createElement("input");
+form.appendChild(initialsField);
 initialsField.setAttribute("type", "text");
 initialsField.setAttribute("placeholder", "Your initials");
 
+// create storeInitials function
 function storeInitials() {
     var userInitials = initialsField.value.trim();
     localStorage.setItem("initials", JSON.stringify(userInitials));
 }
+
+// add event listener to initials submission
+initialsField.addEventListener("submit", storeInitials);
 
 // when the game ends, clear the timer and questions. allow user to save initials and score
 function endGame() {
@@ -131,7 +137,7 @@ function endGame() {
     scoreEl.appendChild(initialsField);
 
     // put score into score element
-    scoreEl.appendChild(score)
+    scoreEl.appendChild(renderScore);
 }
 
 // store initials input
@@ -140,7 +146,7 @@ storeInitials();
 // render initials and score
 function renderInitialsAndScore() {
     // get stored score
-    var highScore = JSON.parse(localStorage.getItem("score"))
+    var highScore = JSON.parse(localStorage.getItem("scoreCounter"))
     // create element to hold score info
     var renderScore = document.createElement("span");
     // get stored initials
@@ -152,7 +158,7 @@ function renderInitialsAndScore() {
     // put initials info into initials element
     renderInitials.innerHTML = initialsInput;
     // put score and initials into score element
-    document.scoreEl.appendChild(renderScore);
+    document.scoreEl.appendChild(scoreCounter);
     document.scoreEl.appendChild(renderInitials);
 }
 
