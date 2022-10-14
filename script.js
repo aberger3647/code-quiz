@@ -7,6 +7,7 @@ var timeEl = document.querySelector(".time");
 var scoreCounter = 0;
 var scoreEl = document.getElementById("score");
 
+
 promptEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
 scoreEl.setAttribute("style", "font-family:sans-serif; text-align:center; display:flex; flex-direction:column");
 
@@ -52,7 +53,6 @@ var questionsAndAnswers = [
     }
 ]
 
-
 function createElements () {
     promptEl.innerHTML = "";
     var questionEl = document.createElement("h3");
@@ -78,7 +78,7 @@ function prompt() {
 }
 
 function answerClick(event) {
-    //subtract 10 seconds for a wrong answer, do nothing for a right answer
+    // subtract 10 seconds for a wrong answer, do nothing for a right answer
     var correctAnswer = questionsAndAnswers[questionCounter].correct;
     if (event.target.tagName = "button") {
         if (event.target.textContent === correctAnswer) {
@@ -110,13 +110,19 @@ function answerClick(event) {
 
 promptEl.addEventListener("click", answerClick);
 
-// store score
+// when the game ends, clear the timer and questions. allow user to save initials and score
+function endGame() {
+    // clear timer and questions
+    promptEl.innerHTML = "";
+    timeEl.style.display = "none";
+    // put initials field into score element
+    scoreEl.appendChild(form);
+}
 
 // create initials form
 var form = document.createElement("form");
 form.setAttribute("id", "form");
 var initialsField = document.createElement("input");
-console.log(form);
 form.appendChild(initialsField);
 initialsField.setAttribute("type", "text");
 initialsField.setAttribute("placeholder", "Your initials");
@@ -124,50 +130,59 @@ initialsField.setAttribute("placeholder", "Your initials");
 // create storeInitials function
 function storeInitials(event) {
     event.preventDefault();
-    console.log("function hit");
     var userInitials = initialsField.value.trim();
-    console.log(userInitials);
-    localStorage.setItem("initials", JSON.stringify(userInitials));
-    localStorage.setItem("score", JSON.stringify(scoreCounter));
-    initialsField.value = "";
+    if (userInitials.length > 2 || userInitials.length < 2) {
+        alert("Please enter 2 initials.");
+    // store initials and score
+    } else {
+        localStorage.setItem("initials", JSON.stringify(userInitials));
+        localStorage.setItem("score", JSON.stringify(scoreCounter));
+        initialsField.value = "";
+    }
 }
 
 // add event listener to initials submission
 form.addEventListener("submit", storeInitials);
 
-console.log(initialsField);
-// when the game ends, clear the timer and questions. allow user to save initials and score
-function endGame() {
-    // clear timer and questions
-    clearInterval(timerInterval);
-    promptEl.innerHTML = "";
-    timeEl.style.display = "none";
+var initialsInput = JSON.parse(localStorage.getItem('userInitials'));
+var userScore = JSON.parse(localStorage.getItem('scoreCounter'));
 
-    // put initials field into score element
-    scoreEl.appendChild(form);
-}
+var highScores = [
+    {
+        initials: "initialsInput",
+    }, {
+        score: "userScore"
+    }
+]
 
+console.log(highScores);
+// // create high score table
+// function createTable() {
+//     var highScoreEl = document.createElement("table");
+//     var tableHeader = document.create
+// }
 
-// store initials input
-// storeInitials();
+// function displayHighScore() {
+//     scoreEl.style.display = "none";
+// }
 
-// render initials and score
-function renderInitialsAndScore() {
-    // get stored score
-    var highScore = JSON.parse(localStorage.getItem("scoreCounter"))
-    // create element to hold score info
-    var renderScore = document.createElement("span");
-    // get stored initials
-    var initialsInput = JSON.parse(localStorage.getItem("userInitials"));
-    // create element to hold initials info
-    var renderInitials = document.createElement("span");
-    // put score info into score element
-    renderScore.innerHTML = highScore;
-    // put initials info into initials element
-    renderInitials.innerHTML = initialsInput;
-    // put score and initials into score element
-    scoreEl.appendChild(renderScore);
-    scoreEl.appendChild(renderInitials);
-}
+// // render initials and score
+// function renderInitialsAndScore() {
+//     // get stored score
+//     var highScore = JSON.parse(localStorage.getItem("scoreCounter"))
+//     // create element to hold score info
+//     var renderScore = document.createElement("span");
+//     // get stored initials
+//     var initialsInput = JSON.parse(localStorage.getItem("userInitials"));
+//     // create element to hold initials info
+//     var renderInitials = document.createElement("span");
+//     // put score info into score element
+//     renderScore.innerHTML = highScore;
+//     // put initials info into initials element
+//     renderInitials.innerHTML = initialsInput;
+//     // put score and initials into score element
+//     scoreEl.appendChild(renderScore);
+//     scoreEl.appendChild(renderInitials);
+// }
 
-renderInitialsAndScore();
+// renderInitialsAndScore();
